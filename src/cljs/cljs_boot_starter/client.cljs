@@ -4,23 +4,32 @@
             [bidi.bidi :as bidi]
             [accountant.core :as accountant]
             [cljs-boot-starter.signin :refer [sign-in]]
-            [cljs-boot-starter.signup :refer [sign-up]]))
+            [cljs-boot-starter.signup :refer [sign-up]]
+            [cljs-boot-starter.bookslist :refer [book-list]]))
 
 (enable-console-print!)
 
-(defonce authors-name ["James Gosling" "Rich Hickey" "Bjarne Stroustrup" "Robert Sedgewick"])
+(defonce authors-name ["James Gosling" "Rich Hickey" "Bjarne Stroustrup" "Donald Knuth" "Robert Sedgewick"])
+
+;; below authors-link according to above authors-name sequence.
+(defonce authors-wiki-link ["https://en.wikipedia.org/wiki/James_Gosling"
+                            "https://en.wikipedia.org/wiki/Clojure"
+                            "https://en.wikipedia.org/wiki/Bjarne_Stroustrup"
+                            "https://en.wikipedia.org/wiki/Donald_Knuth"
+                            "https://en.wikipedia.org/wiki/Robert_Sedgewick_(computer_scientist)"])
 
 (def app-routes
   ["/"
    [["" :home]
     ["sign_in" :sign-in]
     ["sign_up" :sign-up]
-    ;;["authors" :author-list]
     ["author"
      [["" :author-list]
       [["/name-" :author-id] :author-name]]]
     ["top-10-book" :top-10-books]
-    ["about" :about]]])
+    ["about" :about]
+    [true :page-not-define]
+    ]])
 
 (defmulti page-contents identity)
 
@@ -52,11 +61,11 @@
   [:div
    [page-contents :home]
    [:hr]
-   [:h3 "Authors List :"]
+   [:h3 "Author's List :"]
    [:ul
     (map (fn [a-name]
            [:li {:key (str "name-" a-name)}
-            [:a {:href (bidi/path-for app-routes :author-name :author-id a-name)} (str a-name)]]) authors-name)]])
+            [:a {:href (bidi/path-for app-routes :author-name :author-id a-name)} a-name]]) authors-name)]])
 
 (defmethod page-contents :author-name []
   (let [routing-data (session/get :route)
@@ -67,7 +76,9 @@
 
 (defmethod page-contents :top-10-books []
   [:span
-   [:h2 "this is books page"]])
+   [page-contents :home]
+   [:hr]
+   [book-list]])
 
 (defmethod page-contents :about []
   [:span
@@ -85,6 +96,23 @@
  It also explains with multiple approaches for each problem. The user
  can understand the algorithm analysis for each problem."]])
 
+(defmethod page-contents :page-not-define []
+  "non existing routes go here"
+  [:span
+   [:h2
+    "Bidi Routing example: Test for this link is define on not ?"]
+   [:hr]
+   [:h3 "404: couldn't find this page"]
+   [:pre.verse
+    "what you are looking for, i don't have"]])
+
+(defmethod page-contents :default []
+  "Configured routes, missing an implementation, go here"
+  [:span
+   [:h2 "404: page not found"]
+   [:pre.verse
+    "This page should be here, but I never created it."]])
+
 (defn home []
   (fn []
     (let [page (:current-page (session/get :route))]
@@ -93,7 +121,7 @@
        [:hr]
        (page-contents page)
        [:hr]
-       [:p "***Bidi Routing Implementation using "
+       [:p "***Routing Implementation using "
         [:a {:href "https://reagent-project.github.io/"} "Reagent"] ", "
         [:a {:href "https://github.com/juxt/bidi"} "Bidi"] " & "
         [:a {:href "https://github.com/venantius/accountant"} "Accountant"]]
