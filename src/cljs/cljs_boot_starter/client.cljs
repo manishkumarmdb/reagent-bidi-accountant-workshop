@@ -1,5 +1,6 @@
 (ns cljs-boot-starter.client
-  (:require [reagent.core :as reagent :refer [atom render]]
+  (:require [clojure.string :as string]
+            [reagent.core :as reagent :refer [atom render]]
             [reagent.session :as session]
             [bidi.bidi :as bidi]
             [accountant.core :as accountant]
@@ -11,7 +12,8 @@
 
 (defonce authors-name ["James Gosling" "Rich Hickey" "Bjarne Stroustrup" "Donald Knuth" "Robert Sedgewick"])
 
-;; below authors-link according to above authors-name sequence.
+;; below authors-link according to above authors-name in sequence.
+;; not connected link with authors-name
 (defonce authors-wiki-link ["https://en.wikipedia.org/wiki/James_Gosling"
                             "https://en.wikipedia.org/wiki/Clojure"
                             "https://en.wikipedia.org/wiki/Bjarne_Stroustrup"
@@ -65,13 +67,24 @@
    [:ul
     (map (fn [a-name]
            [:li {:key (str "name-" a-name)}
-            [:a {:href (bidi/path-for app-routes :author-name :author-id a-name)} a-name]]) authors-name)]])
+            [:a {:href (bidi/path-for app-routes
+                                      :author-name
+                                      :author-id (-> a-name
+                                                     ;;here i'm removing whitespace character from author-name because in URI, whitespace is not allowed. for more details about please refer this link http://www.ietf.org/rfc/rfc3986.txt
+                                                     ;;(string/split #"\s")
+                                                     ;;(string/join)
+                                                     ;;.toLowerCase
+                                                     (string/replace #"\s" "_")
+                                                     ))} a-name]])
+         authors-name)]])
 
 (defmethod page-contents :author-name []
   (let [routing-data (session/get :route)
         author-page (get-in routing-data [:route-params :author-id])]
-    [:div
-     [:h4 (str "You'r @ " author-page " : page")]
+    [:span
+     [:h3 "You'r @ : " [:u
+                        (-> author-page
+                            (string/replace #"_" " "))] " : page"]
      [:p [:a {:href (bidi/path-for app-routes :author-list)} "Back to author list page"]]]))
 
 (defmethod page-contents :top-10-books []
@@ -106,6 +119,7 @@
    [:pre.verse
     "what you are looking for, i don't have"]])
 
+;; if i configure route and not defined i.e missing implementation.
 (defmethod page-contents :default []
   "Configured routes, missing an implementation, go here"
   [:span
@@ -139,9 +153,8 @@
             route-params (:route-params match)]
         (session/put! :route {:current-page current-page
                               :route-params route-params})))
-    :path-exists?
-    (fn [path]
-      (boolean (bidi/match-route app-routes path)))})
+    :path-exists? (fn [path]
+                    (boolean (bidi/match-route app-routes path)))})
   (accountant/dispatch-current!)
   (init))
 
