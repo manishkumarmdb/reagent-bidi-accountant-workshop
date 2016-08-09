@@ -8,10 +8,12 @@
      [:label " username/email : "]
      [comp/input {:type "text"
                   :placeholder "enter your username/email"
-                  :name "username"}]
+                  :name "username"}]]
+    [:div
      [:label " password : "]
      [comp/input {:type "password"
                   :placeholder "enter your password"
-                  :name "password"}]
+                  :name "password"}]]
+    [:div
      [:label " "]
-     [comp/button {:type "submit"} "Sign in"]]]])
+     [comp/input {:type "submit"} "Sign in"]]]])
