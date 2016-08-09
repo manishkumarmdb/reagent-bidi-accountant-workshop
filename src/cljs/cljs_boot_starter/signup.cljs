@@ -31,4 +31,4 @@
                   :name "password"}]]
     [:div
      [:label " "]
-     [comp/button {:type "submit"} "Submit"]]]])
+     [comp/input {:type "submit"} "Submit"]]]])
