@@ -1,26 +1,35 @@
-table, th, td {
+.signin-table {
+    border: 0px;
+}
+.signin-th {
+    font-weight: normal;
+}
+
+.signup-table {
+    border: 0px;
+}
+
+.books-table {
     border: 1px solid black;
     border-collapse: collapse;
-    width: 100%;
 }
-th, td {
-    padding: 5px;
-    width: 100px;
-    text-align: left;
+
+.books-table-th {
+    border: 1px solid black;
+}
+
+.books-table-td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.books-list-table-td {
+    border: 0px solid black;
+    border-collapse: collapse;
 }
 
 u {
     color: blue;
-}
-
-label {
-  float:left;
-  width:10%;
-  margin-right:0.5em;
-  padding-top:0.2em;
-  text-align:right;
-  font-style: normal;
-  font-size: 17px;
 }
 
 input[type=text] {
