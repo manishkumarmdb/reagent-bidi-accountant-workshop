@@ -11,21 +11,28 @@
 
 (defn book-list []
   [:div
-   [:table
+   [:table.books-table
     [:thead>tr
-     [:th "Author's Name"]
-     [:th "Book's Name"]]
+     [:th.books-table-th "Author's Name"]
+     [:th.books-table-th "Book's Name"]]
     [:tbody
      (for [v author-and-books]
        ^{:key (:author v)}
        [:tr
-        [:td
+        [:td.books-table-td
          (:author v)]
-        [:td
+        [:td.books-table-td
          (for [b (range (count (:books v)))]
            ^{:key b}
-           [:li
-            (-> (:books v)
-                (get b))])]
+           #_[:p
+              (-> (:books v)
+                  (get b))]
+           [:table
+            [:tbody
+             [:tr
+              [:td.books-list-table-td
+               (-> (:books v)
+                   (get b)
+                   (str "."))]]]])]
         ])]
     ]])
