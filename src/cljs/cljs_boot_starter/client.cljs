@@ -49,7 +49,7 @@
   [:div
    [page-contents :home]
    [:hr]
-   [:h3 "please sign-in here"]
+   [:p {:style {:font-size "18px"}} "please sign-in here."]
    [sign-in]])
 
 (defmethod page-contents :sign-up []
