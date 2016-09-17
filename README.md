@@ -1,4 +1,4 @@
-# reagent-bidi-accountant-example
+# reagent-bidi-accountant-workshop
 
 In this project example i used boot template.
 
