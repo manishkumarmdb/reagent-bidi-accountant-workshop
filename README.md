@@ -1,4 +1,4 @@
-# bidi-routing-example
+# reagent-bidi-accountant-example
 
 In this project example i used boot template.
 
